@@ -1,0 +1,62 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicTacToe</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <svg width="1000">
+        <defs>
+            <g id="blank">
+
+            </g>
+            <g id="cross">
+
+            </g>
+            <g id="circle">
+
+            </g>
+        </defs>
+        <g id="menu">
+            <rect x="0" y="0" width="1000" height="2000" fill="mediumseagreen" />
+            <text x="500" y="250" stroke="black" fill="white" font-size="50px" text-anchor="middle"
+                stroke-width="3">TicTacToe</text>
+            <foreignObject x="100" y="300" height="40" width="300">
+                <input type="text" placeholder="Unnamed" />
+            </foreignObject>
+            <g>
+                <rect x="100" y="360" width="100" height="30" fill="#DE1F1F" stroke="#B41919" rx="3" ry="3"
+                    stroke-width="3" />
+                <text stroke="black" x="150" y="385" text-anchor="middle" font-size="20px" fill="white">Player 1</text>
+            </g>
+            <text x="500" y="330" stroke="black" fill="white" font-size="30px" text-anchor="middle">vs.</text>
+            <foreignObject x="600" y="300" height="40" width="300">
+                <input type="text" placeholder="Unnamed" />
+            </foreignObject>
+            <g>
+                <rect x="800" y="360" width="100" height="30" fill="#5A9FDB" stroke="#4981B1" rx="3" ry="3"
+                    stroke-width="3" />
+                <text stroke="black" x="850" y="385" text-anchor="middle" font-size="20px" fill="white">Player 2</text>
+            </g>
+            <g>
+                <rect />
+                <text>Ready</text>
+            </g>
+        </g>
+        <g id="original">
+
+        </g>
+        <g id="numbers">
+
+        </g>
+        <g id="killer">
+
+        </g>
+    </svg>
+</body>
+
+</html>
