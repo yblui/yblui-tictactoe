@@ -10,23 +10,36 @@ html {
 }
 
 input {
-    width: 300px;
-    height: 40px;
+    width: 286px;
+    height: 28px;
     border: solid 5px gray;
     border-radius: 3px;
     font-family: "Segoe UI Variable Display", sans-serif;
-    font-size: 30px;
+    font-size: 28px;
+    margin: 0;
 }
 
 input:focus {
     border-color: black;
 }
 
-svg>g{
-    transition:1s;
+svg>g {
+    transition: 1s;
 }
 
 svg>g:not(.show) {
     opacity: 0;
     transform: scale(0);
+}
+
+#menu use {
+    transition: 9s
+}
+
+#ready:hover rect {
+    fill: #33D53E;
+    stroke: #17A921;
+}
+#ready:hover{
+    cursor: pointer;
 }
