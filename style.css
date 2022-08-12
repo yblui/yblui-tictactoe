@@ -25,6 +25,7 @@ input:focus {
 
 svg>g {
     transition: 1s;
+    transform-origin: center center;
 }
 
 svg>g:not(.show) {
@@ -33,13 +34,18 @@ svg>g:not(.show) {
 }
 
 #menu use {
-    transition: 9s
+    transition: linear 9s;
 }
 
 #ready:hover rect {
     fill: #33D53E;
     stroke: #17A921;
 }
-#ready:hover{
+
+#ready:hover {
     cursor: pointer;
+}
+#original use{
+    transform: scale(0) rotate(360deg);
+    transition:.9s;
 }
