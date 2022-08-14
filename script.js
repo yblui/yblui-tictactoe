@@ -13,8 +13,9 @@ function go(g) {
             playerB = new Player(document.getElementById("playerB").value);
             break;
         case "numbers":
-            playerA.winStreak=0;
-            playerB.winStreak=0;
+            playerA.winStreak = 0;
+            playerB.winStreak = 0;
+            break;
         case "killer":
 
     }
@@ -46,8 +47,30 @@ function move(round, boardx, boardy, x, y) {
     board[boardx][boardy] = (redTurn) ? "x" : "o";
     redTurn = !redTurn;
     if ((board[0][0] == board[0][1] && board[0][1] == board[0][2] && board[0][0]) || (board[1][0] == board[1][1] && board[1][1] == board[1][2] && board[1][0]) || (board[2][0] == board[2][1] && board[2][1] == board[2][2] && board[2][0])
-    ||(board[0][0] == board[1][0] && board[1][0] == board[2][0] && board[0][0]) || (board[0][1] == board[1][1] && board[1][1] == board[2][1] && board[0][1]) || (board[0][2] == board[1][2] && board[1][2] == board[2][2] && board[0][2])
-    ||(board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0]) || (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2])) {
+        || (board[0][0] == board[1][0] && board[1][0] == board[2][0] && board[0][0]) || (board[0][1] == board[1][1] && board[1][1] == board[2][1] && board[0][1]) || (board[0][2] == board[1][2] && board[1][2] == board[2][2] && board[0][2])
+        || (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0]) || (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2])) {
+        let winner;
+        if ((board[0][0] == board[0][1] && board[0][1] == board[0][2] && board[0][0]) || (board[0][0] == board[1][0] && board[1][0] == board[2][0] && board[0][0])
+            || (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0])) {
+            winner = (board[0][0] == "x") ? "playerA" : "playerB";
+        } else if (board[1][0] == board[1][1] && board[1][1] == board[1][2] && board[1][0]) {
+            winner = (board[1][0] == "x") ? "playerA" : "playerB";
+        } else if (board[2][0] == board[2][1] && board[2][1] == board[2][2] && board[2][0]) {
+            winner = (board[2][0] == "x") ? "playerA" : "playerB";
+        } else if (board[0][1] == board[1][1] && board[1][1] == board[2][1] && board[0][1]) {
+            winner = (board[0][1] == "x") ? "playerA" : "playerB";
+        } else if ((board[0][2] == board[1][2] && board[1][2] == board[2][2] && board[0][2]) || (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2])) {
+            winner = (board[0][2] == "x") ? "playerA" : "playerB";
+        }
+        if (winner == "playerA") {
+            playerA.winStreak++;
+            playerA.score += playerA.winStreak;
+            playerB.winStreak = 0;
+        } else {
+            playerB.winStreak++;
+            playerB.score += playerB.winStreak;
+            playerA.winStreak = 0;
+        }
         board = [
             ["", "", ""],
             ["", "", ""],
@@ -61,8 +84,8 @@ function move(round, boardx, boardy, x, y) {
                 }, 900);
             }, 900);
         });
-        if(gameInfo.no==9){
-            if(round=="original"){
+        if (gameInfo.no == 9) {
+            if (round == "original") {
                 go("numbers");
             }
             return;
