@@ -1,3 +1,4 @@
+let playerA, playerB;
 function go(g) {
     for (let i of document.querySelectorAll("svg>g")) {
         i.classList.remove("show");
@@ -5,53 +6,67 @@ function go(g) {
     document.getElementById(g).classList.add("show");
     switch (g) {
         case "original":
-            for (let i of document.querySelectorAll("#original use")) {
+            for (let i of document.querySelectorAll("#original>use")) {
                 i.setAttribute("style", "transform:scale(1) rotate(0deg)");
             }
+            playerA = new Player(document.getElementById("playerA").value);
+            playerB = new Player(document.getElementById("playerB").value);
             break;
         case "numbers":
-
+            playerA.winStreak=0;
+            playerB.winStreak=0;
         case "killer":
 
     }
-}
-animation();
-setInterval(() => {
-    animation();
-}, 18000);
-
-function animation() {
-    for (let i of document.querySelectorAll("#menu use")) {
-        i.setAttribute("y", -150 - Math.random() * 1000);
-    }
-    setTimeout(function () {
-        for (let i of document.querySelectorAll("#menu use")) {
-            i.setAttribute("y", 1000 + Math.random() * 1000);
-        }
-    }, 9000)
 }
 let board = [
     ["", "", ""],
     ["", "", ""],
     ["", "", ""]
-]
-let redTurn = true,gameInfo={
-    "round":1,
-    "no":1
+];
+let redTurn = true, gameInfo = {
+    "round": 1,
+    "no": 1
 };
+class Player {
+    constructor(name) {
+        this.name = name;
+        this.score = 0;
+        this.winStreak = 0;
+    }
+}
 function move(round, boardx, boardy, x, y) {
     let i = document.createElementNS("http://www.w3.org/2000/svg", "use");
     i.setAttribute("x", x);
     i.setAttribute("y", y);
     i.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", (redTurn) ? "#cross" : "#circle");
     i.setAttribute("transform-origin", (x + 50) + " " + (y + 50));
-    document.getElementById(round).appendChild(i);
-    setTimeout(function () {
-        i.setAttribute("style", "transform:scale(1) rotate(0deg)")
-    }, 0)
+    document.querySelector("#" + round + " .uses").appendChild(i);
+    i.setAttribute("style", "transform:scale(1) rotate(0deg)");
     board[boardx][boardy] = (redTurn) ? "x" : "o";
     redTurn = !redTurn;
-    if(board[0][0]==board[0][1]&&board[0][1]==board[0][2]){
-
+    if ((board[0][0] == board[0][1] && board[0][1] == board[0][2] && board[0][0]) || (board[1][0] == board[1][1] && board[1][1] == board[1][2] && board[1][0]) || (board[2][0] == board[2][1] && board[2][1] == board[2][2] && board[2][0])
+    ||(board[0][0] == board[1][0] && board[1][0] == board[2][0] && board[0][0]) || (board[0][1] == board[1][1] && board[1][1] == board[2][1] && board[0][1]) || (board[0][2] == board[1][2] && board[1][2] == board[2][2] && board[0][2])
+    ||(board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[0][0]) || (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[0][2])) {
+        board = [
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+        ];
+        document.querySelectorAll("#" + round + " .uses use").forEach(function (element) {
+            setTimeout(() => {
+                element.setAttribute("style", "transform:scale(0) rotate(360deg)");
+                setTimeout(() => {
+                    element.parentNode.removeChild(element);
+                }, 900);
+            }, 900);
+        });
+        if(gameInfo.no==9){
+            if(round=="original"){
+                go("numbers");
+            }
+            return;
+        }
+        gameInfo.no++;
     }
 }

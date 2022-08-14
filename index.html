@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <svg width="1000">
+    <svg width="1000" id="svg" xmlns="http://www.w3.org/2000/svg">
         <rect x="0" y="0" width="1000" height="2000" fill="#1EA761" />
         <defs>
             <g id="blank">
@@ -38,16 +38,10 @@
         </defs>
         <g id="menu" class="show">
             <rect x="0" y="0" width="1000" height="2000" fill="#1EA761" />
-            <use xlink:href="#cross" x="159" y="1000" opacity="0.5" />
-            <use xlink:href="#cross" x="890" y="1000" opacity="0.5" />
-            <use xlink:href="#cross" x="461" y="1000" opacity="0.5" />
-            <use xlink:href="#circle" x="748" y="1000" opacity="0.5" />
-            <use xlink:href="#circle" x="102" y="1000" opacity="0.5" />
-            <use xlink:href="#circle" x="629" y="1000" opacity="0.5" />
             <text x="500" y="250" stroke="black" fill="white" font-size="50px" text-anchor="middle"
                 stroke-width="3">TicTacToe</text>
             <foreignObject x="100" y="300" height="40" width="300">
-                <input type="text" placeholder="Unnamed" />
+                <input type="text" placeholder="Unnamed" id="playerA" />
             </foreignObject>
             <g>
                 <rect x="100" y="360" width="100" height="30" fill="#DE1F1F" stroke="#B41919" rx="3" ry="3"
@@ -56,7 +50,7 @@
             </g>
             <text x="500" y="330" stroke="black" fill="white" font-size="30px" text-anchor="middle">vs.</text>
             <foreignObject x="600" y="300" height="40" width="300">
-                <input type="text" placeholder="Unnamed" />
+                <input type="text" placeholder="Unnamed" id="playerB" />
             </foreignObject>
             <g>
                 <rect x="800" y="360" width="100" height="30" fill="#5A9FDB" stroke="#4981B1" rx="3" ry="3"
@@ -93,10 +87,12 @@
             <use xlink:href="#blank" x="340" y="420" onclick="move('original',2,0,340,420);" transform-origin="390 470" />
             <use xlink:href="#blank" x="450" y="420" onclick="move('original',2,1,450,420);" transform-origin="500 470" />
             <use xlink:href="#blank" x="560" y="420" onclick="move('original',2,2,560,420);" transform-origin="610 470" />
+            <g class="uses" x="0" y="0" width="1000" height="100%"></g>
         </g>
         <g id="numbers">
             <rect x="0" y="0" width="1000" height="2000" fill="#DECF7C" />
-            <text>Round 2</text>
+            <text x="500" y="50" font-size="30px" fill="white" stroke="black" stroke-width="2"
+            text-anchor="middle">Round 2</text>
             <circle cx="300" cy="70" fill="rgba(255,255,255,0.5)" r="3" />
             <circle cx="350" cy="70" fill="rgba(255,255,255,0.5)" r="3" />
             <circle cx="400" cy="70" fill="rgba(255,255,255,0.5)" r="3" />
@@ -106,15 +102,16 @@
             <circle cx="600" cy="70" fill="rgba(255,255,255,0.5)" r="3" />
             <circle cx="650" cy="70" fill="rgba(255,255,255,0.5)" r="3" />
             <circle cx="700" cy="70" fill="rgba(255,255,255,0.5)" r="3" />
-            <use xlink:href="#blank" x="340" y="200" />
-            <use xlink:href="#blank" x="450" y="200" />
-            <use xlink:href="#blank" x="560" y="200" />
-            <use xlink:href="#blank" x="340" y="310" />
-            <use xlink:href="#blank" x="450" y="310" />
-            <use xlink:href="#blank" x="560" y="310" />
-            <use xlink:href="#blank" x="340" y="420" />
-            <use xlink:href="#blank" x="450" y="420" />
-            <use xlink:href="#blank" x="560" y="420" />
+            <use xlink:href="#blank" x="340" y="200" onclick="move('numbers',0,0,340,200);" transform-origin="390 250" />
+            <use xlink:href="#blank" x="450" y="200" onclick="move('numbers',0,1,450,200);" transform-origin="500 250" />
+            <use xlink:href="#blank" x="560" y="200" onclick="move('numbers',0,2,560,200);" transform-origin="610 250" />
+            <use xlink:href="#blank" x="340" y="310" onclick="move('numbers',1,0,340,310);" transform-origin="390 360" />
+            <use xlink:href="#blank" x="450" y="310" onclick="move('numbers',1,1,450,310);" transform-origin="500 360" />
+            <use xlink:href="#blank" x="560" y="310" onclick="move('numbers',1,2,560,310);" transform-origin="610 360" />
+            <use xlink:href="#blank" x="340" y="420" onclick="move('numbers',2,0,340,420);" transform-origin="390 470" />
+            <use xlink:href="#blank" x="450" y="420" onclick="move('numbers',2,1,450,420);" transform-origin="500 470" />
+            <use xlink:href="#blank" x="560" y="420" onclick="move('numbers',2,2,560,420);" transform-origin="610 470" />
+            <g class="uses" x="0" y="0" width="1000" height="100%"></g>
         </g>
         <g id="killer">
             <text>Round 3</text>
