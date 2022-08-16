@@ -71,6 +71,7 @@ function move(round, boardx, boardy, x, y) {
             playerB.score += playerB.winStreak;
             playerA.winStreak = 0;
         }
+        
         board = [
             ["", "", ""],
             ["", "", ""],

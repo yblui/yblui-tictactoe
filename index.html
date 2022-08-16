@@ -69,15 +69,15 @@
             <rect x="0" y="0" width="1000" height="2000" fill="#1EA761" />
             <text x="500" y="50" font-size="30px" fill="white" stroke="black" stroke-width="2"
                 text-anchor="middle">Round 1</text>
-            <circle cx="300" cy="70" fill="rgba(255,255,255,0.5)" r="3" />
-            <circle cx="350" cy="70" fill="rgba(255,255,255,0.5)" r="3" />
-            <circle cx="400" cy="70" fill="rgba(255,255,255,0.5)" r="3" />
-            <circle cx="450" cy="70" fill="rgba(255,255,255,0.5)" r="3" />
-            <circle cx="500" cy="70" fill="rgba(255,255,255,0.5)" r="3" />
-            <circle cx="550" cy="70" fill="rgba(255,255,255,0.5)" r="3" />
-            <circle cx="600" cy="70" fill="rgba(255,255,255,0.5)" r="3" />
-            <circle cx="650" cy="70" fill="rgba(255,255,255,0.5)" r="3" />
-            <circle cx="700" cy="70" fill="rgba(255,255,255,0.5)" r="3" />
+            <circle cx="300" cy="70" fill="rgba(255,255,255,0.5)" r="3" class="circles" />
+            <circle cx="350" cy="70" fill="rgba(255,255,255,0.5)" r="3" class="circles" />
+            <circle cx="400" cy="70" fill="rgba(255,255,255,0.5)" r="3" class="circles" />
+            <circle cx="450" cy="70" fill="rgba(255,255,255,0.5)" r="3" class="circles" />
+            <circle cx="500" cy="70" fill="rgba(255,255,255,0.5)" r="3" class="circles" />
+            <circle cx="550" cy="70" fill="rgba(255,255,255,0.5)" r="3" class="circles" />
+            <circle cx="600" cy="70" fill="rgba(255,255,255,0.5)" r="3" class="circles" />
+            <circle cx="650" cy="70" fill="rgba(255,255,255,0.5)" r="3" class="circles" />
+            <circle cx="700" cy="70" fill="rgba(255,255,255,0.5)" r="3" class="circles" />
             <use xlink:href="#blank" x="340" y="200" onclick="move('original',0,0,340,200);" transform-origin="390 250" />
             <use xlink:href="#blank" x="450" y="200" onclick="move('original',0,1,450,200);" transform-origin="500 250" />
             <use xlink:href="#blank" x="560" y="200" onclick="move('original',0,2,560,200);" transform-origin="610 250" />
@@ -88,8 +88,12 @@
             <use xlink:href="#blank" x="450" y="420" onclick="move('original',2,1,450,420);" transform-origin="500 470" />
             <use xlink:href="#blank" x="560" y="420" onclick="move('original',2,2,560,420);" transform-origin="610 470" />
             <g class="uses" x="0" y="0" width="1000" height="100%"></g>
-            <text></text>
-            <text></text>
+            <text class="playerA" x="30" y="40" fill="white" stroke="black" font-size="20px">Unnamed</text>
+            <text class="playerB" x="970" y="40" text-anchor="end" fill="white" stroke="black" font-size="20px">Unnamed</text>
+            <rect />
+            <rect />
+            <text class="playerAScore" font-weight="bold"x="400" y="50" text-anchor="end" fill="#DE1F1F" stroke="#B41919" font-size="30px">0</text>
+            <text class="playerBScore" font-weight="bold"x="600" y="50" fill="#5A9FDB" stroke="#4981B1" font-size="30px">0</text>
         </g>
         <g id="numbers">
             <rect x="0" y="0" width="1000" height="2000" fill="#DECF7C" />
