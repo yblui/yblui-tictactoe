@@ -1,48 +1,11 @@
-body {
-    font-family: "Segoe UI Variable Display", sans-serif;
-    height: calc(100% - 16px);
-    font-weight: bold;
+.hide{
+    display: none;
 }
-
-svg,
-html {
-    height: 100%;
+svg{
+    font-family:"Coolvetica", sans-serif;
+    cursor: default;
 }
-
-input {
-    width: 286px;
-    height: 28px;
-    border: solid 5px gray;
-    border-radius: 3px;
-    font-family: "Segoe UI Variable Display", sans-serif;
-    font-size: 28px;
-    margin: 0;
-}
-
-input:focus {
-    border-color: black;
-}
-
-svg>g {
-    transition: 0.9s;
-    transform-origin: center center;
-}
-
-svg>g:not(.show) {
-    opacity: 0;
-    transform: scale(0);
-}
-
-#ready:hover rect {
-    fill: #33D53E;
-    stroke: #17A921;
-}
-
-#ready:hover {
-    cursor: pointer;
-}
-
-#original use {
-    transform: scale(0) rotate(360deg);
-    transition: 0.9s;
+@font-face {
+    font-family: Coolvetica;
+    src: url("coolvetica-rg-1.ttf");
 }
