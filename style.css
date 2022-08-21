@@ -1,10 +1,18 @@
-.hide{
+.hide {
     display: none;
 }
-svg{
-    font-family:"Coolvetica", sans-serif;
+
+svg {
+    font-family: "Coolvetica", sans-serif;
     cursor: default;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
 }
+
 @font-face {
     font-family: Coolvetica;
     src: url("coolvetica-rg-1.ttf");
