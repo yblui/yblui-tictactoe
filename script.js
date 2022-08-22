@@ -33,6 +33,7 @@ class Game {
                 k.classList.add("hide");
             }
         }
+        this.scene = scene;
     }
     setBg(scene, fill) {
         if (!document.getElementById(scene).getElementsByClassName("bg").length) {
@@ -123,6 +124,9 @@ class Game {
         if (document.getElementById(id)) {
             document.getElementById(id).parentNode.removeChild(document.getElementById(id));
         }
+    }
+    pick(array) {
+        return array[Math.floor(array.length * Math.random())];
     }
 }
 Game.prototype.crossTurn = true;
@@ -276,7 +280,7 @@ for (let m = 1; m <= 9; m++) {
                     game.crossScore++;
                     game.crossWinStreak = 0;
                     game.circleWinStreak = 0;
-                    game.setText("red1", RANDOM_DRAW[Math.floor(RANDOM_DRAW.length * Math.random())]);
+                    game.setText("red1", game.pick(RANDOM_DRAW));
                 }
                 updateScore();
                 setTimeout(function () {
@@ -316,6 +320,7 @@ game.clickEvent("game", function () {
         game.gameOver = false;
         for (let i = 1; i <= 9; i++) {
             game.changeSprite("rect" + i, "blank");
+            game.changeSprite("rectn" + i, "blank");
         }
         game.board = [
             ["", "", ""],
@@ -323,10 +328,13 @@ game.clickEvent("game", function () {
             ["", "", ""]
         ];
         game.setText("red1", "");
+        game.setText("red2", "");
         game.setCount++;
-        if (game.setCount == 10) {
+        if (game.setCount == 10 && game.scene == "original") {
             game.switchScene("numbers");
             game.setCount = 1;
+        } else if (game.setCount == 10 && game.scene == "numbers") {
+            game.switchScene("killer");
         }
     }
 });
@@ -371,7 +379,7 @@ arr.forEach(function (a) {
 });
 for (let m = 1; m <= 9; m++) {
     game.clickEvent("rectn" + m, function () {
-        if (game.board[(m - 1 - (m - 1) % 3) / 3][(m - 1) % 3] != "3") {
+        if (!game.gameOver && !game.board[0].includes("?") && !game.board[1].includes("?") && !game.board[2].includes("?")) {
             if (((game.crossTurn) ? game.arrCross : game.arrCircle)[0] > 0) {
                 game.add("num1" + m, "num1", "numbers", (m - 1) % 3 * 200 + 200, (m - 1 - (m - 1) % 3) / 3 * 200 + 100);
             }
@@ -391,6 +399,32 @@ for (let m = 1; m <= 9; m++) {
                     game.remove("num1" + m);
                     game.remove("num2" + m);
                     game.remove("num3" + m);
+                    if (winn() && !game.gameOver) {
+                        let result = winn();
+                        if (result == "o") {
+                            game.circleScore += (game.circleWinStreak + 2);
+                            game.circleWinStreak++;
+                            game.crossWinStreak = 0;
+                            game.setText("red2", "O wins!");
+                        } else if (result == "x") {
+                            game.crossScore += (game.crossWinStreak + 2);
+                            game.crossWinStreak++;
+                            game.circleWinStreak = 0;
+                            game.setText("red2", "X wins!");
+                        } else {
+                            game.circleScore++;
+                            game.crossScore++;
+                            game.crossWinStreak = 0;
+                            game.circleWinStreak = 0;
+                            game.setText("red2", game.pick(RANDOM_DRAW));
+                        }
+                        updateScore();
+                        game.arrCircle = [2, 2, 2];
+                        game.arrCross = [2, 2, 2];
+                        setTimeout(function () {
+                            game.gameOver = true;
+                        }, 0)
+                    }
                 })
             }
         }
@@ -423,12 +457,18 @@ function winn() {
         ["", "", ""],
         ["", "", ""]
     ]
-    for (let i = 0; i < 2; i++) {
-        for (let j = 0; j < 2; j++) {
+    for (let i = 0; i <= 2; i++) {
+        for (let j = 0; j <= 2; j++) {
             board2[i][j] = game.board[i][j][0];
         }
     }
-    return win(board2);
+    if (win(board2) != "draw" && win(board2) != null) return win(board2);
+    else if (game.arrCircle.every(function(a){
+        return a==0;
+    }) && game.arrCross.every(function(a){
+        return a==0;
+    })) return "draw";
+    else return null;
 }
 
 //killer

@@ -11,6 +11,8 @@ svg {
     bottom: 0;
     right: 0;
     margin: auto;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 @font-face {
