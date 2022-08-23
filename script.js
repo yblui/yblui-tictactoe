@@ -139,6 +139,59 @@ Game.prototype.board = [
     ["", "", ""],
     ["", "", ""]
 ];
+Game.prototype.boardKiller = [
+    [//row
+        [//cell
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+        ],
+        [
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+        ],
+        [
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+        ]
+    ],
+    [
+        [
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+        ],
+        [
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+        ],
+        [
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+        ]
+    ],
+    [
+        [
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+        ],
+        [
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+        ],
+        [
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+        ]
+    ]
+]
 Game.prototype.setCount = 1;
 let game = new Game({
     "id": "game",
@@ -174,6 +227,8 @@ let rect12 = game.createRect(397, 0, 6, 600, "white");
 game.addSprite("boardWhite", rect9, rect10, rect11, rect12);
 let blankRect = game.createRect(0, 0, 200, 200, "white");
 game.addSprite("blank", blankRect);
+let blankSm = game.createRect(0, 0, 200 / 3, 200 / 3, "#111");
+game.addSprite("blankSm", blankSm);
 let oText = game.createText("O", 100, 150, {
     "font-size": "150px",
     "fill": "black"
@@ -503,7 +558,7 @@ function hasAvailableMoves() {
     let board3 = []
     for (let i = 0; i <= 2; i++) {
         for (let j = 0; j <= 2; j++) {
-            board2[i][j] = (game.board[i][j][1])?game.board[i][j][1]:"";
+            board2[i][j] = (game.board[i][j][1]) ? game.board[i][j][1] : "";
         }
     }
     board3 = [].concat(...board2)
@@ -516,12 +571,18 @@ game.addText("round3", "killer", "Round 3", 500, 40, {
     "font-size": "30px",
     "fill": "white"
 });
-game.add("boardwhite", "boardWhite", "killer", 200, 100);
+for (let i = 1; i <= 9; i++) {
+    for (let j = 1; j <= 9; j++) {
+        game.add("rectk" + i + j, "blankSm", "killer", (j - 1) * 200 / 3 + 200, (i - 1) * 200 / 3 + 100);
+        game.clickEvent("rectk" + i + j)
+    }
+}
 arr.forEach(function (a) {
     arr.forEach(function (b) {
         game.add("rect" + (a / 200 * 3 + b / 200 + 1), "boardSm", "killer", b + 200, a + 100);
     });
 });
+game.add("boardwhite", "boardWhite", "killer", 200, 100);
 game.setBg("killer", "#111");
 game.addText("x3", "killer", game.p1, 300, 40, {
     "font-size": "30px",
