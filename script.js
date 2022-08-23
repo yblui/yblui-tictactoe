@@ -192,6 +192,7 @@ Game.prototype.boardKiller = [
         ]
     ]
 ]
+Game.prototype.clickable = 0;
 Game.prototype.setCount = 1;
 let game = new Game({
     "id": "game",
@@ -238,7 +239,17 @@ let xText = game.createText("X", 100, 150, {
     "font-size": "150px",
     "fill": "black"
 });
-game.addSprite("cross", xText);
+game.addSprite("cross", xText)
+let oSm = game.createText("O", 100 / 3, 50, {
+    "font-size": "50px",
+    "fill": "white"
+});
+game.addSprite("circleSm", oSm);
+let xSm = game.createText("X", 100 / 3, 50, {
+    "font-size": "50px",
+    "fill": "white"
+});
+game.addSprite("crossSm", xSm);
 let num1 = game.createText("1", 200 / 6, 125, {
     "font-size": "50px",
     "fill": "gray"
@@ -571,10 +582,27 @@ game.addText("round3", "killer", "Round 3", 500, 40, {
     "font-size": "30px",
     "fill": "white"
 });
-for (let i = 1; i <= 9; i++) {
-    for (let j = 1; j <= 9; j++) {
-        game.add("rectk" + i + j, "blankSm", "killer", (j - 1) * 200 / 3 + 200, (i - 1) * 200 / 3 + 100);
-        game.clickEvent("rectk" + i + j)
+for (let j = 1; j <= 9; j++) {//j:列号
+    for (let i = 1; i <= 9; i++) {//i:行号
+        game.add("rectk" + j + i, "blankSm", "killer", (j - 1) * 200 / 3 + 200, (i - 1) * 200 / 3 + 100);
+        game.clickEvent("rectk" + j + i, function () {
+            if (game.clickable == 0 || game.clickable == (i - 1 - (i - 1) % 3) / 3 * 3 + (j - 1 - (j - 1) % 3) / 3 + 1 && !game.boardKiller[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3][(i - 1) % 3][(j - 1) % 3]) {
+                game.changeSprite("rectk" + j + i, (game.crossTurn) ? "crossSm" : "circleSm");
+                game.crossTurn = !game.crossTurn;
+                game.boardKiller[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3][(i - 1) % 3][(j - 1) % 3] = (game.crossTurn) ? "x" : "o";
+                let isFull = true;
+                for (let w = 0; w < 3; w++) {
+                    for (let h = 0; h < 3; h++) {
+                        if (!game.boardKiller[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3][w][h]) isFull = false;
+                    }
+                }
+                if (!isFull) {
+                    game.clickable = (i - 1) % 3 * 3 + (j - 1) % 3 + 1;
+                } else {
+                    game.clickable = 0;
+                }
+            }
+        })
     }
 }
 arr.forEach(function (a) {
