@@ -250,6 +250,18 @@ let xSm = game.createText("X", 100 / 3, 50, {
     "fill": "white"
 });
 game.addSprite("crossSm", xSm);
+let xTransparent = game.createText("X", 100, 150, {
+    "font-size": "150px",
+    "fill": "white",
+    "opacity": "0.5"
+});
+game.addSprite("crossTrans", xTransparent, rect5, rect6, rect7, rect8);
+let oTransparent = game.createText("O", 100, 150, {
+    "font-size": "150px",
+    "fill": "white",
+    "opacity": "0.5"
+});
+game.addSprite("circleTrans", oTransparent, rect5, rect6, rect7, rect8);
 let num1 = game.createText("1", 200 / 6, 125, {
     "font-size": "50px",
     "fill": "gray"
@@ -406,7 +418,7 @@ game.clickEvent("game", function () {
             game.setCount = 1;
         } else if (game.setCount == 10 && game.scene == "numbers") {
             game.switchScene("killer");
-        } else if(game.scene == "killer"){
+        } else if (game.scene == "killer") {
             game.switchScene("result");
         }
     }
@@ -584,8 +596,13 @@ game.addText("round3", "killer", "Round 3", 500, 40, {
     "font-size": "30px",
     "fill": "white"
 });
-for (let j = 1; j <= 9; j++) {//j:列号
-    for (let i = 1; i <= 9; i++) {//i:行号
+arr.forEach(function (a) {
+    arr.forEach(function (b) {
+        game.add("boardsm" + (a / 200 * 3 + b / 200 + 1), "boardSm", "killer", b + 200, a + 100);
+    });
+});
+for (let j = 1; j <= 9; j++) {
+    for (let i = 1; i <= 9; i++) {
         game.add("rectk" + j + i, "blankSm", "killer", (j - 1) * 200 / 3 + 200, (i - 1) * 200 / 3 + 100);
         game.clickEvent("rectk" + j + i, function () {
             if ((game.clickable == 0 || game.clickable == (i - 1 - (i - 1) % 3) / 3 * 3 + (j - 1 - (j - 1) % 3) / 3 + 1) && !game.boardKiller[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3][(i - 1) % 3][(j - 1) % 3]) {
@@ -611,28 +628,31 @@ for (let j = 1; j <= 9; j++) {//j:列号
                     game.crossWinStreak = 0;
                 } else if (win(game.boardKiller[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3]) == "o" && !game.board[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3]) {
                     game.board[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3] = "o";
-                    game.circleScore += (1 + circleWinStreak);
+                    game.circleScore += (1 + game.circleWinStreak);
                     game.circleWinStreak++;
                     game.crossWinStreak = 0;
+                    game.changeSprite("boardsm" + ((i - 1) - (i - 1) % 3 + ((j - 1) - (j - 1) % 3) / 3 + 1), "circleTrans");
                 } else if (win(game.boardKiller[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3]) == "x" && !game.board[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3]) {
                     game.board[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3] = "x";
-                    game.crossScore += (1 + crossWinStreak);
+                    game.crossScore += (1 + game.crossWinStreak);
                     game.crossWinStreak++;
                     game.circleWinStreak = 0;
+                    game.changeSprite("boardsm" + ((i - 1) - (i - 1) % 3 + ((j - 1) - (j - 1) % 3) / 3 + 1), "crossTrans");
                 }
+                updateScore();
                 if (wink() == "draw") {
                     game.circleScore += 3;
                     game.crossScore += 3;
                     game.setText("red3", game.pick(RANDOM_DRAW));
-                    game.gameOver=true;
+                    game.gameOver = true;
                 } else if (wink() == "x") {
                     game.crossScore += 6;
                     game.setText("red3", "X wins!");
-                    game.gameOver=true;
+                    game.gameOver = true;
                 } else if (wink() == "o") {
                     game.circleScore += 6;
                     game.setText("red3", "O wins!");
-                    game.gameOver=true;
+                    game.gameOver = true;
                 }
             }
         })
@@ -657,11 +677,6 @@ function wink() {
         return null;
     }
 }
-arr.forEach(function (a) {
-    arr.forEach(function (b) {
-        game.add("rect" + (a / 200 * 3 + b / 200 + 1), "boardSm", "killer", b + 200, a + 100);
-    });
-});
 game.add("boardwhite", "boardWhite", "killer", 200, 100);
 game.setBg("killer", "#111");
 game.addText("x3", "killer", game.p1, 300, 40, {
@@ -691,4 +706,7 @@ function isCompleted() {
 game.addText("back", "result", "back", 500, 500, {
     "font-size": "30px",
     "fill": "#ff5757"
+})
+game.addText("winner","result","The winner is ...",500,300,{
+    
 })
