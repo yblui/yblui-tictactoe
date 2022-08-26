@@ -140,8 +140,8 @@ Game.prototype.board = [
     ["", "", ""]
 ];
 Game.prototype.boardKiller = [
-    [//row
-        [//cell
+    [
+        [
             ["", "", ""],
             ["", "", ""],
             ["", "", ""]
@@ -406,6 +406,8 @@ game.clickEvent("game", function () {
             game.setCount = 1;
         } else if (game.setCount == 10 && game.scene == "numbers") {
             game.switchScene("killer");
+        } else if(game.scene == "killer"){
+            game.switchScene("result");
         }
     }
 });
@@ -586,14 +588,14 @@ for (let j = 1; j <= 9; j++) {//j:列号
     for (let i = 1; i <= 9; i++) {//i:行号
         game.add("rectk" + j + i, "blankSm", "killer", (j - 1) * 200 / 3 + 200, (i - 1) * 200 / 3 + 100);
         game.clickEvent("rectk" + j + i, function () {
-            if (game.clickable == 0 || game.clickable == (i - 1 - (i - 1) % 3) / 3 * 3 + (j - 1 - (j - 1) % 3) / 3 + 1 && !game.boardKiller[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3][(i - 1) % 3][(j - 1) % 3]) {
+            if ((game.clickable == 0 || game.clickable == (i - 1 - (i - 1) % 3) / 3 * 3 + (j - 1 - (j - 1) % 3) / 3 + 1) && !game.boardKiller[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3][(i - 1) % 3][(j - 1) % 3]) {
                 game.changeSprite("rectk" + j + i, (game.crossTurn) ? "crossSm" : "circleSm");
-                game.crossTurn = !game.crossTurn;
                 game.boardKiller[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3][(i - 1) % 3][(j - 1) % 3] = (game.crossTurn) ? "x" : "o";
+                game.crossTurn = !game.crossTurn;
                 let isFull = true;
                 for (let w = 0; w < 3; w++) {
                     for (let h = 0; h < 3; h++) {
-                        if (!game.boardKiller[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3][w][h]) isFull = false;
+                        if (!game.boardKiller[(i - 1) % 3][(j - 1) % 3][w][h]) isFull = false;
                     }
                 }
                 if (!isFull) {
@@ -601,8 +603,58 @@ for (let j = 1; j <= 9; j++) {//j:列号
                 } else {
                     game.clickable = 0;
                 }
+                if (win(game.boardKiller[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3]) == "draw" && !game.board[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3]) {
+                    game.board[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3] = "?"
+                    game.circleScore++;
+                    game.crossScore++;
+                    game.circleWinStreak = 0;
+                    game.crossWinStreak = 0;
+                } else if (win(game.boardKiller[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3]) == "o" && !game.board[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3]) {
+                    game.board[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3] = "o";
+                    game.circleScore += (1 + circleWinStreak);
+                    game.circleWinStreak++;
+                    game.crossWinStreak = 0;
+                } else if (win(game.boardKiller[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3]) == "x" && !game.board[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3]) {
+                    game.board[((i - 1) - (i - 1) % 3) / 3][((j - 1) - (j - 1) % 3) / 3] = "x";
+                    game.crossScore += (1 + crossWinStreak);
+                    game.crossWinStreak++;
+                    game.circleWinStreak = 0;
+                }
+                if (wink() == "draw") {
+                    game.circleScore += 3;
+                    game.crossScore += 3;
+                    game.setText("red3", game.pick(RANDOM_DRAW));
+                    game.gameOver=true;
+                } else if (wink() == "x") {
+                    game.crossScore += 6;
+                    game.setText("red3", "X wins!");
+                    game.gameOver=true;
+                } else if (wink() == "o") {
+                    game.circleScore += 6;
+                    game.setText("red3", "O wins!");
+                    game.gameOver=true;
+                }
             }
         })
+    }
+}
+function wink() {
+    let tmp = Array.prototype.slice.call(game.board);
+    tmp = tmp.flat().sort();
+    let board2 = Array.prototype.slice.call(game.board);
+    for (let a = 0; a < board2.length; a++) {
+        for (let b = 0; b < board2.length; b++) {
+            if (board2[a][b] == "?") board2[a][b] = "";
+        }
+    }
+    if (tmp[0]) {
+        if (!win(board2) || win(board2) == "draw") {
+            return "draw";
+        } else {
+            return win(board2);
+        }
+    } else {
+        return null;
     }
 }
 arr.forEach(function (a) {
@@ -628,6 +680,12 @@ game.addText("oscore3", "killer", 0, 900, 40, {
     "font-size": "30px",
     "fill": "#5a9fdb"
 });
+function isCompleted() {
+    let o = game.boardKiller.flat(Infinity).sort();
+    return !!(o[0]);
+}
+
+//O. T.
 
 //result
 game.addText("back", "result", "back", 500, 500, {
