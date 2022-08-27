@@ -228,7 +228,7 @@ let rect12 = game.createRect(397, 0, 6, 600, "white");
 game.addSprite("boardWhite", rect9, rect10, rect11, rect12);
 let blankRect = game.createRect(0, 0, 200, 200, "white");
 game.addSprite("blank", blankRect);
-let blankSm = game.createRect(0, 0, 200 / 3, 200 / 3, "#111");
+let blankSm = game.createRect(0, 0, 200 / 3 - 6, 200 / 3 - 6, "transparent");
 game.addSprite("blankSm", blankSm);
 let oText = game.createText("O", 100, 150, {
     "font-size": "150px",
@@ -255,13 +255,21 @@ let xTransparent = game.createText("X", 100, 150, {
     "fill": "white",
     "opacity": "0.5"
 });
-game.addSprite("crossTrans", xTransparent, rect5, rect6, rect7, rect8);
+let rectx5 = game.createRect(0, 194 / 3 - 3, 200, 6, "gray");
+let rectx6 = game.createRect(0, 194 / 3 * 2 - 3, 200, 6, "gray");
+let rectx7 = game.createRect(194 / 3 - 3, 0, 6, 200, "gray");
+let rectx8 = game.createRect(194 / 3 * 2 - 3, 0, 6, 200, "gray");
+game.addSprite("crossTrans", xTransparent, rectx5, rectx6, rectx7, rectx8);
 let oTransparent = game.createText("O", 100, 150, {
     "font-size": "150px",
     "fill": "white",
     "opacity": "0.5"
 });
-game.addSprite("circleTrans", oTransparent, rect5, rect6, rect7, rect8);
+let recto5 = game.createRect(0, 194 / 3 - 3, 200, 6, "gray");
+let recto6 = game.createRect(0, 194 / 3 * 2 - 3, 200, 6, "gray");
+let recto7 = game.createRect(194 / 3 - 3, 0, 6, 200, "gray");
+let recto8 = game.createRect(194 / 3 * 2 - 3, 0, 6, 200, "gray");
+game.addSprite("circleTrans", oTransparent, recto5, recto6, recto7, recto8);
 let num1 = game.createText("1", 200 / 6, 125, {
     "font-size": "50px",
     "fill": "gray"
@@ -423,23 +431,23 @@ game.clickEvent("game", function () {
         }
     }
 });
-function win(arr) {
-    if ((arr[0][0] == arr[0][1] && arr[0][1] == arr[0][2] && arr[0][0]) || (arr[1][0] == arr[1][1] && arr[1][1] == arr[1][2] && arr[1][0]) || (arr[2][0] == arr[2][1] && arr[2][1] == arr[2][2] && arr[2][0])
-        || (arr[0][0] == arr[1][0] && arr[1][0] == arr[2][0] && arr[0][0]) || (arr[0][1] == arr[1][1] && arr[1][1] == arr[2][1] && arr[0][1]) || (arr[0][2] == arr[1][2] && arr[1][2] == arr[2][2] && arr[0][2])
-        || (arr[0][0] == arr[1][1] && arr[1][1] == arr[2][2] && arr[0][0]) || (arr[0][2] == arr[1][1] && arr[1][1] == arr[2][0] && arr[0][2])) {
-        if ((arr[0][0] == arr[0][1] && arr[0][1] == arr[0][2] && arr[0][0]) || (arr[0][0] == arr[1][0] && arr[1][0] == arr[2][0] && arr[0][0])
-            || (arr[0][0] == arr[1][1] && arr[1][1] == arr[2][2] && arr[0][0])) {
-            return arr[0][0];
-        } else if (arr[1][0] == arr[1][1] && arr[1][1] == arr[1][2] && arr[1][0]) {
-            return arr[1][0];
-        } else if (arr[2][0] == arr[2][1] && arr[2][1] == arr[2][2] && arr[2][0]) {
-            return arr[2][0];
-        } else if (arr[0][1] == arr[1][1] && arr[1][1] == arr[2][1] && arr[0][1]) {
-            return arr[0][1];
-        } else if ((arr[0][2] == arr[1][2] && arr[1][2] == arr[2][2] && arr[0][2]) || (arr[0][2] == arr[1][1] && arr[1][1] == arr[2][0] && arr[0][2])) {
-            return arr[0][2];
+function win(array) {
+    if ((array[0][0] == array[0][1] && array[0][1] == array[0][2] && array[0][0]) || (array[1][0] == array[1][1] && array[1][1] == array[1][2] && array[1][0]) || (array[2][0] == array[2][1] && array[2][1] == array[2][2] && array[2][0])
+        || (array[0][0] == array[1][0] && array[1][0] == array[2][0] && array[0][0]) || (array[0][1] == array[1][1] && array[1][1] == array[2][1] && array[0][1]) || (array[0][2] == array[1][2] && array[1][2] == array[2][2] && array[0][2])
+        || (array[0][0] == array[1][1] && array[1][1] == array[2][2] && array[0][0]) || (array[0][2] == array[1][1] && array[1][1] == array[2][0] && array[0][2])) {
+        if ((array[0][0] == array[0][1] && array[0][1] == array[0][2] && array[0][0]) || (array[0][0] == array[1][0] && array[1][0] == array[2][0] && array[0][0])
+            || (array[0][0] == array[1][1] && array[1][1] == array[2][2] && array[0][0])) {
+            return array[0][0];
+        } else if (array[1][0] == array[1][1] && array[1][1] == array[1][2] && array[1][0]) {
+            return array[1][0];
+        } else if (array[2][0] == array[2][1] && array[2][1] == array[2][2] && array[2][0]) {
+            return array[2][0];
+        } else if (array[0][1] == array[1][1] && array[1][1] == array[2][1] && array[0][1]) {
+            return array[0][1];
+        } else if ((array[0][2] == array[1][2] && array[1][2] == array[2][2] && array[0][2]) || (array[0][2] == array[1][1] && array[1][1] == array[2][0] && array[0][2])) {
+            return array[0][2];
         }
-    } else if (arr[0][0] && arr[0][1] && arr[0][2] && arr[1][0] && arr[1][1] && arr[1][2] && arr[2][0] && arr[2][1] && arr[2][2]) {
+    } else if (array[0][0] && array[0][1] && array[0][2] && array[1][0] && array[1][1] && array[1][2] && array[2][0] && array[2][1] && array[2][2]) {
         return "draw";
     } else {
         return null;
@@ -592,13 +600,17 @@ function hasAvailableMoves() {
 }
 
 //killer
+game.addText("red3", "killer", "", 500, 70, {
+    "font-size": "20px",
+    "fill": "#ff5757"
+});
 game.addText("round3", "killer", "Round 3", 500, 40, {
     "font-size": "30px",
     "fill": "white"
 });
 arr.forEach(function (a) {
     arr.forEach(function (b) {
-        game.add("boardsm" + (a / 200 * 3 + b / 200 + 1), "boardSm", "killer", b + 200, a + 100);
+        game.add("boardsm" + (a / 200 * 3 + b / 200 + 1), "boardSm", "killer", b + 200+3, a + 100+3);
     });
 });
 for (let j = 1; j <= 9; j++) {
@@ -639,7 +651,6 @@ for (let j = 1; j <= 9; j++) {
                     game.circleWinStreak = 0;
                     game.changeSprite("boardsm" + ((i - 1) - (i - 1) % 3 + ((j - 1) - (j - 1) % 3) / 3 + 1), "crossTrans");
                 }
-                updateScore();
                 if (wink() == "draw") {
                     game.circleScore += 3;
                     game.crossScore += 3;
@@ -654,6 +665,7 @@ for (let j = 1; j <= 9; j++) {
                     game.setText("red3", "O wins!");
                     game.gameOver = true;
                 }
+                updateScore();
             }
         })
     }
@@ -662,19 +674,23 @@ function wink() {
     let tmp = Array.prototype.slice.call(game.board);
     tmp = tmp.flat().sort();
     let board2 = Array.prototype.slice.call(game.board);
-    for (let a = 0; a < board2.length; a++) {
+    for (const element of board2) {
         for (let b = 0; b < board2.length; b++) {
-            if (board2[a][b] == "?") board2[a][b] = "";
+            if (element[b] == "?") element[b] = "";
         }
     }
-    if (tmp[0]) {
+    if (tmp[0]) {//已满
         if (!win(board2) || win(board2) == "draw") {
             return "draw";
         } else {
             return win(board2);
         }
-    } else {
-        return null;
+    } else {//未满
+        if (win(board2)) {
+            return win(board2);
+        } else {
+            return null;
+        }
     }
 }
 game.add("boardwhite", "boardWhite", "killer", 200, 100);
@@ -706,7 +722,10 @@ function isCompleted() {
 game.addText("back", "result", "back", 500, 500, {
     "font-size": "30px",
     "fill": "#ff5757"
-})
-game.addText("winner","result","The winner is ...",500,300,{
-    
-})
+});
+game.addText("winner", "result", "The winner is ...", 500, 300, {
+    "fill": "black"
+});
+game.addText("winnerName", "result", "", 500, 300, {
+
+});
