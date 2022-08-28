@@ -1,199 +1,11 @@
-const SVG_NS = "http://www.w3.org/2000/svg", XLINK_NS = "http://www.w3.org/1999/xlink";
 const RANDOM_DRAW = ["Draw game!", "Nobody wins...", "It's a tie!"];
-class Game {
-    constructor(json) {
-        this.id = json.id;
-        this.width = json.width;
-        this.height = json.height;
-        this.scene = json.scene;
-        this.bg = json.bg;
-        this.gameOver = false;
-        document.getElementById(json.id).setAttribute("width", json.width);
-        document.getElementById(json.id).setAttribute("height", json.height);
-        let gNode = document.createElementNS(SVG_NS, "g");
-        gNode.setAttribute("id", json.scene);
-        let rectNode = document.createElementNS(SVG_NS, "rect");
-        rectNode.setAttribute("fill", json.bg);
-        rectNode.setAttribute("width", json.width);
-        rectNode.setAttribute("height", json.height);
-        gNode.appendChild(rectNode);
-        document.getElementById(json.id).appendChild(gNode);
-    }
-    addScene(scene) {
-        let gNode = document.createElementNS(SVG_NS, "g");
-        gNode.setAttribute("id", scene);
-        gNode.classList.add("hide");
-        document.getElementById(this.id).appendChild(gNode);
-    }
-    switchScene(scene) {
-        let scenes = Array.prototype.slice.call(document.getElementById(this.id).getElementsByTagName("symbol"));
-        if (arguments[1] == "previous") {
-            scenes.map(function (a) {
-                return a.id;
-            })
-            for (let y in scenes) {
-                if (scenes[y] == this.scene) {
-                    this.switchScene(this.scene[(y != 0) ? (y - 1) : (scene.length - 1)]);
-                    return;
-                }
-            }
-            return;
-        } else if (arguments[1] == "next") {
-            this.nextScene();
-            return;
-        } else if (arguments[1] == "random") {
-            this.switchScene(this.scene[Math.floor(Math.random() * scenes.length)]);
-            return;
-        }
-        for (let k of document.getElementById(this.id).getElementsByTagName("g")) {
-            if (k.id == scene) {
-                k.classList.remove("hide");
-            } else {
-                k.classList.add("hide");
-            }
-        }
-        this.scene = scene;
-    }
-    nextScene() {
-        let scenes = Array.prototype.slice.call(document.getElementById(this.id).getElementsByTagName("symbol"));
-        scenes.map(function (a) {
-            return a.id;
-        })
-        for (let y in scenes) {
-            if (scenes[y] == this.scene) {
-                this.switchScene(this.scene[(y != scene.length) ? (y + 1) : 0]);
-                return;
-            }
-        }
-    }
-    getScene(returnNumber) {
-        if (returnNumber) {
-            let scenes = Array.prototype.slice.call(document.getElementById(this.id).getElementsByTagName("symbol"))
-            scenes.map(function (a) {
-                return a.id;
-            })
-            for (let y in scenes) {
-                if (scenes[y] == this.scene) return y + 1;
-            }
-        } else {
-            return this.scene;
-        }
-    }
-    setBg(scene, fill) {
-        if (!document.getElementById(scene).getElementsByClassName("bg").length) {
-            let bgRect = this.createRect(0, 0, this.width, this.height, fill);
-            bgRect.classList.add("bg");
-            document.getElementById(scene).insertBefore(bgRect, document.getElementById(scene).childNodes[0]);
-        } else {
-            document.getElementById(scene).getElementsByClassName("bg")[0].setAttribute("fill", fill);
-        }
-    }
-    addSprite(id) {
-        let symbolNode = document.createElementNS(SVG_NS, "symbol");
-        let arrArg = Array.prototype.slice.call(arguments);
-        arrArg.shift();
-        arrArg.forEach(function (arg) {
-            symbolNode.appendChild(arg);
-        });
-        symbolNode.setAttribute("id", id);
-        document.getElementById(this.id).appendChild(symbolNode);
-    }
-    createText(text, x, y, style) {
-        let textElement = document.createElementNS(SVG_NS, "text");
-        let textNode = document.createTextNode(text);
-        textElement.appendChild(textNode);
-        textElement.setAttribute("x", x);
-        textElement.setAttribute("y", y);
-        textElement.setAttribute("text-anchor", "middle");
-        if (style) {
-            for (let q of Object.getOwnPropertyNames(style)) {
-                textElement.setAttribute(q, style[q]);
-            }
-        }
-        return textElement;
-    }
-    addText(id, scene, text, x, y, style) {
-        let textElement = this.createText(text, x, y, style);
-        textElement.setAttribute("id", id);
-        document.getElementById(scene).appendChild(textElement);
-    }
-    setText(id, text) {
-        let textNode = document.createTextNode(text);
-        document.getElementById(id).removeChild(document.getElementById(id).childNodes[0]);
-        document.getElementById(id).appendChild(textNode);
-    }
-    add(id, sprite, scene, x, y, style) {
-        let useNode = document.createElementNS(SVG_NS, "use");
-        useNode.setAttributeNS(XLINK_NS, "xlink:href", "#" + sprite);
-        useNode.setAttribute("x", x);
-        useNode.setAttribute("y", y);
-        useNode.setAttribute("id", id);
-        if (style) {
-            for (let q of Object.getOwnPropertyNames(style)) {
-                useNode.setAttribute(q, style[q]);
-            }
-        }
-        document.getElementById(scene).appendChild(useNode);
-    }
-    createRect(x, y, width, height, fill, style) {
-        let rect = document.createElementNS(SVG_NS, "rect");
-        rect.setAttribute("x", x);
-        rect.setAttribute("y", y);
-        rect.setAttribute("width", width);
-        rect.setAttribute("height", height);
-        rect.setAttribute("fill", fill);
-        if (style) {
-            for (let q of Object.getOwnPropertyNames(style)) {
-                rect.setAttribute(q, style[q]);
-            }
-        }
-        return rect;
-    }
-    clickEvent(element, func) {
-        if (document.getElementById(element)) {
-            document.getElementById(element).addEventListener("click", func);
-        }
-    }
-    changeSprite(id, sprite) {
-        document.getElementById(id).setAttributeNS(XLINK_NS, "xlink:href", "#" + sprite);
-    }
-    transform(id, style) {
-        if (style) {
-            for (let q of Object.getOwnPropertyNames(style)) {
-                document.getElementById(id).setAttribute(q, style[q]);
-            }
-        }
-    }
-    remove(id) {
-        if (document.getElementById(id)) {
-            document.getElementById(id).parentNode.removeChild(document.getElementById(id));
-        }
-    }
-    pick(array) {
-        return array[Math.floor(array.length * Math.random())];
-    }
-    createEllipse(cx, cy, rx, ry, fill) {
-        let ellipse = document.createElementNS(SVG_NS, "ellipse");
-        ellipse.setAttribute("cx", cx);
-        ellipse.setAttribute("cy", cy);
-        ellipse.setAttribute("rx", rx);
-        ellipse.setAttribute("ry", ry);
-        ellipse.setAttribute("fill", fill);
-        return ellipse;
-    }
-    createPath(d) {
-        let path = document.createElementNS(SVG_NS, "path")
-        path.setAttribute("d", d);
-        return path;
-    }
-}
 Game.prototype.crossTurn = true;
 Game.prototype.crossScore = 0;
 Game.prototype.circleScore = 0;
 Game.prototype.crossWinStreak = 0;
 Game.prototype.circleWinStreak = 0;
-Game.prototype.crossTime = 5;
-Game.prototype.circleTime = 5;
+Game.prototype.crossTime = 5000;
+Game.prototype.circleTime = 5000;
 Game.prototype.board = [
     ["", "", ""],
     ["", "", ""],
@@ -343,20 +155,24 @@ let blue3 = game.createText("3", 100, 150, {
     "font-size": "150px"
 });
 game.addSprite("bluen3", blue3);
-
+let bomb = game.createPath("M135.25 38.156c-16.082.46-32.345 7.235-46.47 17.407-17.216 12.4-31.534 30.2-37.31 50.687-5.78 20.488-1.95 44.032 16.155 63.406 14.573 15.595 19.996 29.328 20.563 40.5.566 11.173-3.554 20.304-10.376 27.406-13.643 14.206-37.278 17.995-50.5 6.094l-12.5 13.906c22.224 20.005 56.61 13.645 76.47-7.03 9.93-10.34 16.43-24.836 15.593-41.313-.836-16.478-8.83-34.407-25.594-52.345C67.18 141.782 65.16 126.6 69.47 111.312 73.78 96.025 85.484 80.97 99.72 70.72c14.233-10.253 30.704-15.365 43.218-13.44 9.566 1.474 17.565 6.055 23.062 17.44l15.938-9.19c-8.362-15.432-21.594-24.476-36.157-26.718-2.42-.372-4.866-.596-7.31-.656-1.07-.026-2.148-.03-3.22 0zM243.5 51.563l-120.125 69.374 24.906 43.157c15.03-18.11 33.446-33.898 55-46.344 20.615-11.903 42.444-19.803 64.595-23.938L243.5 51.563zm60.03 57.406c-1.026.01-2.065.034-3.092.06-29.894.803-60.05 8.877-87.813 24.907-88.84 51.298-119.255 164.55-68.03 253.282 51.222 88.73 164.505 119.013 253.343 67.717 88.837-51.295 119.223-164.55 68-253.28-34.666-60.05-97.713-93.346-162.407-92.688z",
+    "black", {
+    "transform": "scale(0.2)"
+});
+game.addSprite("bomb", bomb);
 
 //menu
 game.p1 = prompt("Player 1:", "Unnamed");
 game.p2 = prompt("Player 2:", "Unnamed");
-game.addText("p1text", "menu", game.p1, 300, 300, {
+game.addText("p1text", "menu", game.p1, 300, 350, {
     "font-size": "30px",
     "fill": "black"
 });
-game.addText("vs", "menu", "vs.", 500, 300, {
+game.addText("vs", "menu", "vs.", 500, 350, {
     "font-size": "30px",
     "fill": "gray"
 });
-game.addText("p2text", "menu", game.p2, 700, 300, {
+game.addText("p2text", "menu", game.p2, 700, 350, {
     "font-size": "30px",
     "fill": "black"
 });
@@ -364,12 +180,26 @@ game.addText("play", "menu", "Ready >", 500, 500, {
     "font-size": "30px",
     "fill": "#ff5757"
 });
+game.addText("heading", "menu", "Tictactoe!", 500, 290, {
+    "font-size": "40px",
+    "fill": "black"
+});
 game.clickEvent("play", function () {
     game.switchScene("original");
 });
 
 //original
 let arr = [0, 200, 400];
+game.add("bomb1", "bomb", "original", 50, 100)
+game.add("bomb2", "bomb", "original", 850, 100)
+game.addText("time1", "original", "5.0", 110, 170, {
+    "fill": "white",
+    "font-size": "30px"
+});
+game.addText("time2", "original", "5.0", 910, 170, {
+    "fill": "white",
+    "font-size": "30px"
+});
 arr.forEach(function (a) {
     arr.forEach(function (b) {
         game.add("rect" + (a / 200 * 3 + b / 200 + 1), "blank", "original", b + 200, a + 100);
