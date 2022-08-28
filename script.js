@@ -26,6 +26,25 @@ class Game {
         document.getElementById(this.id).appendChild(gNode);
     }
     switchScene(scene) {
+        let scenes = Array.prototype.slice.call(document.getElementById(this.id).getElementsByTagName("symbol"));
+        if (arguments[1] == "previous") {
+            scenes.map(function (a) {
+                return a.id;
+            })
+            for (let y in scenes) {
+                if (scenes[y] == this.scene) {
+                    this.switchScene(this.scene[(y != 0) ? (y - 1) : (scene.length - 1)]);
+                    return;
+                }
+            }
+            return;
+        } else if (arguments[1] == "next") {
+            this.nextScene();
+            return;
+        } else if (arguments[1] == "random") {
+            this.switchScene(this.scene[Math.floor(Math.random() * scenes.length)]);
+            return;
+        }
         for (let k of document.getElementById(this.id).getElementsByTagName("g")) {
             if (k.id == scene) {
                 k.classList.remove("hide");
@@ -34,6 +53,31 @@ class Game {
             }
         }
         this.scene = scene;
+    }
+    nextScene() {
+        let scenes = Array.prototype.slice.call(document.getElementById(this.id).getElementsByTagName("symbol"));
+        scenes.map(function (a) {
+            return a.id;
+        })
+        for (let y in scenes) {
+            if (scenes[y] == this.scene) {
+                this.switchScene(this.scene[(y != scene.length) ? (y + 1) : 0]);
+                return;
+            }
+        }
+    }
+    getScene(returnNumber) {
+        if (returnNumber) {
+            let scenes = Array.prototype.slice.call(document.getElementById(this.id).getElementsByTagName("symbol"))
+            scenes.map(function (a) {
+                return a.id;
+            })
+            for (let y in scenes) {
+                if (scenes[y] == this.scene) return y + 1;
+            }
+        } else {
+            return this.scene;
+        }
     }
     setBg(scene, fill) {
         if (!document.getElementById(scene).getElementsByClassName("bg").length) {
@@ -128,6 +172,20 @@ class Game {
     pick(array) {
         return array[Math.floor(array.length * Math.random())];
     }
+    createEllipse(cx, cy, rx, ry, fill) {
+        let ellipse = document.createElementNS(SVG_NS, "ellipse");
+        ellipse.setAttribute("cx", cx);
+        ellipse.setAttribute("cy", cy);
+        ellipse.setAttribute("rx", rx);
+        ellipse.setAttribute("ry", ry);
+        ellipse.setAttribute("fill", fill);
+        return ellipse;
+    }
+    createPath(d) {
+        let path = document.createElementNS(SVG_NS, "path")
+        path.setAttribute("d", d);
+        return path;
+    }
 }
 Game.prototype.crossTurn = true;
 Game.prototype.crossScore = 0;
@@ -141,42 +199,9 @@ Game.prototype.board = [
     ["", "", ""],
     ["", "", ""]
 ];
-Game.prototype.boardKiller = [
-    [
-        [
-            ["", "", ""],
-            ["", "", ""],
-            ["", "", ""]
-        ],
-        [
-            ["", "", ""],
-            ["", "", ""],
-            ["", "", ""]
-        ],
-        [
-            ["", "", ""],
-            ["", "", ""],
-            ["", "", ""]
-        ]
-    ],
-    [
-        [
-            ["", "", ""],
-            ["", "", ""],
-            ["", "", ""]
-        ],
-        [
-            ["", "", ""],
-            ["", "", ""],
-            ["", "", ""]
-        ],
-        [
-            ["", "", ""],
-            ["", "", ""],
-            ["", "", ""]
-        ]
-    ],
-    [
+Game.prototype.boardKiller = [];
+for (let i = 0; i < 3; i++) {
+    Game.prototype.boardKiller[Game.prototype.boardKiller.length] = [
         [
             ["", "", ""],
             ["", "", ""],
@@ -193,7 +218,7 @@ Game.prototype.boardKiller = [
             ["", "", ""]
         ]
     ]
-]
+}
 Game.prototype.clickable = 0;
 Game.prototype.setCount = 1;
 let game = new Game({
@@ -319,6 +344,7 @@ let blue3 = game.createText("3", 100, 150, {
 });
 game.addSprite("bluen3", blue3);
 
+
 //menu
 game.p1 = prompt("Player 1:", "Unnamed");
 game.p2 = prompt("Player 2:", "Unnamed");
@@ -429,13 +455,13 @@ game.clickEvent("game", function () {
         game.setText("red2", "");
         game.setCount++;
         if (game.setCount == 10 && game.scene == "original") {
-            game.switchScene("numbers");
+            game.nextScene();
             game.setCount = 1;
         } else if (game.setCount == 10 && game.scene == "numbers") {
-            game.switchScene("killer");
+            game.nextScene();
         } else if (game.scene == "killer") {
             if (game.crossScore == game.circleScore) {
-                game.switchScene("overtime");
+                game.nextScene();
                 return;
             }
             game.setText("winnerName", (game.crossScore > game.circleScore) ? game.p1 : p2)
@@ -743,7 +769,11 @@ function isCompleted() {
 }
 
 //O. T.
-
+game.setBg("overtime", "#111")
+game.addText("ot", "overtime", "O. T.", 500, 40, {
+    "font-size": "30px",
+    "fill": "white"
+});
 //result
 game.addText("back", "result", "Back >", 500, 450, {
     "font-size": "30px",
