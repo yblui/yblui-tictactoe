@@ -134,6 +134,8 @@ Game.prototype.crossScore = 0;
 Game.prototype.circleScore = 0;
 Game.prototype.crossWinStreak = 0;
 Game.prototype.circleWinStreak = 0;
+Game.prototype.crossTime = 5;
+Game.prototype.circleTime = 5;
 Game.prototype.board = [
     ["", "", ""],
     ["", "", ""],
@@ -208,6 +210,7 @@ Game.prototype.arrCircle = [2, 2, 2];
 game.addScene("original");
 game.addScene("numbers");
 game.addScene("killer");
+game.addScene("overtime");
 game.addScene("result");
 
 //sprites
@@ -412,6 +415,10 @@ game.clickEvent("game", function () {
         for (let i = 1; i <= 9; i++) {
             game.changeSprite("rect" + i, "blank");
             game.changeSprite("rectn" + i, "blank");
+            for (let j = 1; j <= 9; j++) {
+                game.changeSprite("rectk" + i + j, "blankSm");
+            }
+            game.changeSprite("boardsm" + i, "boardSm")
         }
         game.board = [
             ["", "", ""],
@@ -427,6 +434,11 @@ game.clickEvent("game", function () {
         } else if (game.setCount == 10 && game.scene == "numbers") {
             game.switchScene("killer");
         } else if (game.scene == "killer") {
+            if (game.crossScore == game.circleScore) {
+                game.switchScene("overtime");
+                return;
+            }
+            game.setText("winnerName", (game.crossScore > game.circleScore) ? game.p1 : p2)
             game.switchScene("result");
         }
     }
@@ -582,7 +594,15 @@ function winn() {
     else return null;
 }
 function hasAvailableMoves() {
-    let largest = (((game.crossTurn) ? game.arrCross : game.arrCircle)[2] != 0) ? 3 : ((((game.crossTurn) ? game.arrCross : game.arrCircle)[1] != 0) ? 2 : 1);
+    let largest = function () {
+        if (((game.crossTurn) ? game.arrCross : game.arrCircle)[2] != 0) {
+            return 3;
+        } else if (((game.crossTurn) ? game.arrCross : game.arrCircle)[1] != 0) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }();
     let board2 = [
         ["", "", ""],
         ["", "", ""],
@@ -610,7 +630,7 @@ game.addText("round3", "killer", "Round 3", 500, 40, {
 });
 arr.forEach(function (a) {
     arr.forEach(function (b) {
-        game.add("boardsm" + (a / 200 * 3 + b / 200 + 1), "boardSm", "killer", b + 200+3, a + 100+3);
+        game.add("boardsm" + (a / 200 * 3 + b / 200 + 1), "boardSm", "killer", b + 200 + 3, a + 100 + 3);
     });
 });
 for (let j = 1; j <= 9; j++) {
@@ -655,15 +675,21 @@ for (let j = 1; j <= 9; j++) {
                     game.circleScore += 3;
                     game.crossScore += 3;
                     game.setText("red3", game.pick(RANDOM_DRAW));
-                    game.gameOver = true;
+                    setTimeout(function () {
+                        game.gameOver = true;
+                    }, 0)
                 } else if (wink() == "x") {
                     game.crossScore += 6;
                     game.setText("red3", "X wins!");
-                    game.gameOver = true;
+                    setTimeout(function () {
+                        game.gameOver = true;
+                    }, 0)
                 } else if (wink() == "o") {
                     game.circleScore += 6;
                     game.setText("red3", "O wins!");
-                    game.gameOver = true;
+                    setTimeout(function () {
+                        game.gameOver = true;
+                    }, 0)
                 }
                 updateScore();
             }
@@ -719,13 +745,19 @@ function isCompleted() {
 //O. T.
 
 //result
-game.addText("back", "result", "back", 500, 500, {
+game.addText("back", "result", "Back >", 500, 450, {
     "font-size": "30px",
     "fill": "#ff5757"
 });
-game.addText("winner", "result", "The winner is ...", 500, 300, {
-    "fill": "black"
+game.addText("winner", "result", "The winner is ...", 500, 250, {
+    "fill": "black",
+    "font-size": "30px"
 });
-game.addText("winnerName", "result", "", 500, 300, {
-
+game.addText("winnerName", "result", "", 500, 350, {
+    "fill": "black",
+    "font-size": "40px"
 });
+game.clickEvent("back", function () {
+    game.switchScene("menu");
+    game = new Game();
+})
