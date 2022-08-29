@@ -68,22 +68,21 @@ class Game {
             "func": func
         }
     }
-    whenClick(sprite,func){
-
-    }
-    stop(a){
-
-    }
-    showVariable(variable){
-
-    }
-    hideVariable(variable){
-        
-    }
     broadcast(msg) {
         for (let i of this.msgEvents) {
-            if (i.msg == msg) i.func();
+            if (i.msg == msg) {
+                i.func();
+            }
         }
+    }
+    stop(a) {
+
+    }
+    showVariable(variable) {
+
+    }
+    hideVariable(variable) {
+
     }
     addScene(scene) {
         let gNode = document.createElementNS(SVG_NS, "g");
@@ -215,7 +214,7 @@ class Game {
         }
         return rect;
     }
-    clickEvent(element, func) {
+    whenClick(element, func) {
         if (document.getElementById(element)) {
             document.getElementById(element).addEventListener("click", func);
         }
@@ -257,5 +256,22 @@ class Game {
             }
         }
         return path;
+    }
+    repeat(times,func){
+        for(let i = 0; i < times;i++){
+            func();
+        }
+    }
+    forever(func) {
+        setInterval(() => {
+            func();
+        }, 1000/60);
+    }
+    wait(seconds) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, seconds * 1000)
+        })
     }
 }
