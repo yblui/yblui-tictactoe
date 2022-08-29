@@ -1,4 +1,5 @@
 const SVG_NS = "http://www.w3.org/2000/svg", XLINK_NS = "http://www.w3.org/1999/xlink";
+let $beginDate = new Date();
 class Game {
     constructor(json) {
         this.id = json.id;
@@ -7,8 +8,36 @@ class Game {
         this.scene = json.scene;
         this.bg = json.bg;
         this.gameOver = false;
-        this.beginDate = new Date();
-        this.timer = this.getTimer();
+        this.msgEvents = []
+        this.timer = function () {
+            return (new Date().getTime() - $beginDate.getTime()) / 1000;
+        };
+        this.resetTimer = function () {
+            $beginDate = new Date();
+        }
+        this.daysSince2000 = function () {
+            return (new Date().getTime() - new Date(2000, 0, 1, 0, 0, 0, 0).getTime()) / 8.64e7;
+        }
+        this.getTime = function (a) {
+            switch (a) {
+                case "year":
+                    return new Date().getFullYear();
+                case "month":
+                    return new Date().getMonth() + 1;
+                case "date":
+                    return new Date().getDate();
+                case "dayOfWeek":
+                    return new Date().getDay();
+                case "hour":
+                    return new Date().getHours();
+                case "minute":
+                    return new Date().getMinutes();
+                case "second":
+                    return new Date().getSeconds();
+                default:
+                    console.error("Invalid parameter: .getTime(" + a + ")")
+            }
+        }
         document.getElementById(json.id).setAttribute("width", json.width);
         document.getElementById(json.id).setAttribute("height", json.height);
         let gNode = document.createElementNS(SVG_NS, "g");
@@ -20,8 +49,41 @@ class Game {
         gNode.appendChild(rectNode);
         document.getElementById(json.id).appendChild(gNode);
     }
-    getTimer() {
-        return (new Date().getTime() - this.beginDate.getTime()) / 1000;
+    run() {
+        this.broadcast("@run");
+    }
+    whenRun(func) {
+        this.whenReceive("@run", func);
+    }
+    whenPress(key, func) {
+        document.addEventListener("keydown", function (e) {
+            if (e.key == key) {
+                func();
+            }
+        })
+    }
+    whenReceive(msg, func) {
+        this.msgEvents[this.msgEvents.length] = {
+            "msg": msg,
+            "func": func
+        }
+    }
+    whenClick(sprite,func){
+
+    }
+    stop(a){
+
+    }
+    showVariable(variable){
+
+    }
+    hideVariable(variable){
+        
+    }
+    broadcast(msg) {
+        for (let i of this.msgEvents) {
+            if (i.msg == msg) i.func();
+        }
     }
     addScene(scene) {
         let gNode = document.createElementNS(SVG_NS, "g");
