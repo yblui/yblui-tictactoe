@@ -305,8 +305,8 @@ game.whenClick("play", function () {
 
 //original
 let arr = [0, 200, 400];
-game.add("bomb1", "bomb", "original", 50, 100)
-game.add("bomb2", "bomb", "original", 850, 100)
+game.add("bomb1", "bomb", "original", 50, 100);
+game.add("bomb2", "bomb", "original", 850, 100);
 game.addText("time1", "original", "5.0", 110, 170, {
     "fill": "white",
     "font-size": "30px"
@@ -330,6 +330,17 @@ setInterval(() => {
                 game.gameOver = true;
             } else if (game.circleTime <= 0) {
                 crossWin(2, "red1");
+                updateScore();
+                game.gameOver = true;
+            }
+        } else if (game.scene == "numbers") {
+            game.setText(((game.crossTurn) ? "timen1" : "timen2"), (((game.crossTurn) ? game.crossTime : game.circleTime) - 1 / 60).toFixed(1));
+            if (game.crossTime <= 0) {
+                circleWin(2, "red2");
+                updateScore();
+                game.gameOver = true;
+            } else if (game.circleTime <= 0) {
+                crossWin(2, "red2");
                 updateScore();
                 game.gameOver = true;
             }
@@ -418,9 +429,16 @@ game.whenClick("game", function () {
             game.setText("time2", "5.0");
             game.crossTime = 5;
             game.circleTime = 5;
+        } else if (game.scene == "numbers") {
+            game.setText("timen1", "10");
+            game.setText("timen2", "10");
+            game.crossTime = 10;
+            game.circleTime = 10;
         }
         if (game.setCount == 10 && game.scene == "original") {
             game.nextScene();
+            game.crossTime = 10;
+            game.circleTime = 10;
             game.setCount = 1;
         } else if (game.setCount == 10 && game.scene == "numbers") {
             game.nextScene();
@@ -436,6 +454,16 @@ game.whenClick("game", function () {
 });
 
 //numbers
+game.add("bombn1", "bomb", "numbers", 50, 100);
+game.add("bombn2", "bomb", "numbers", 850, 100);
+game.addText("timen1", "numbers", "10", 110, 170, {
+    "fill": "white",
+    "font-size": "30px"
+});
+game.addText("timen2", "numbers", "10", 910, 170, {
+    "fill": "white",
+    "font-size": "30px"
+});
 game.addText("round2", "numbers", "Round 2", 500, 40, {
     "font-size": "30px",
     "fill": "black"
@@ -476,21 +504,11 @@ for (let m = 1; m <= 9; m++) {
                     if (winn() && !game.gameOver) {
                         let result = winn();
                         if (result == "o") {
-                            game.circleScore += (game.circleWinStreak + 2);
-                            game.circleWinStreak++;
-                            game.crossWinStreak = 0;
-                            game.setText("red2", "O wins!");
+                            circleWin(2, "red2");
                         } else if (result == "x") {
-                            game.crossScore += (game.crossWinStreak + 2);
-                            game.crossWinStreak++;
-                            game.circleWinStreak = 0;
-                            game.setText("red2", "X wins!");
+                            crossWin(2, "red2");
                         } else {
-                            game.circleScore++;
-                            game.crossScore++;
-                            game.crossWinStreak = 0;
-                            game.circleWinStreak = 0;
-                            game.setText("red2", game.pick(RANDOM_DRAW));
+                            gameDraw("red2");
                         }
                         updateScore();
                         game.arrCircle = [2, 2, 2];
@@ -499,11 +517,7 @@ for (let m = 1; m <= 9; m++) {
                             game.gameOver = true;
                         }, 0)
                     } else if (!hasAvailableMoves()) {
-                        game.circleScore++;
-                        game.crossScore++;
-                        game.crossWinStreak = 0;
-                        game.circleWinStreak = 0;
-                        game.setText("red2", game.pick(RANDOM_DRAW));
+                        gameDraw("red2");
                         updateScore();
                         game.arrCircle = [2, 2, 2];
                         game.arrCross = [2, 2, 2];
