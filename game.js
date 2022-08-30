@@ -7,7 +7,7 @@ class Game {
         this.height = json.height;
         this.scene = json.scene;
         this.bg = json.bg;
-        this.gameOver = false;
+        this.gameOver = true;
         this.msgEvents = []
         this.timer = function () {
             return (new Date().getTime() - $beginDate.getTime()) / 1000;
@@ -49,40 +49,12 @@ class Game {
         gNode.appendChild(rectNode);
         document.getElementById(json.id).appendChild(gNode);
     }
-    run() {
-        this.broadcast("@run");
-    }
-    whenRun(func) {
-        this.whenReceive("@run", func);
-    }
     whenPress(key, func) {
         document.addEventListener("keydown", function (e) {
             if (e.key == key) {
                 func();
             }
         })
-    }
-    whenReceive(msg, func) {
-        this.msgEvents[this.msgEvents.length] = {
-            "msg": msg,
-            "func": func
-        }
-    }
-    broadcast(msg) {
-        for (let i of this.msgEvents) {
-            if (i.msg == msg) {
-                i.func();
-            }
-        }
-    }
-    stop(a) {
-
-    }
-    showVariable(variable) {
-
-    }
-    hideVariable(variable) {
-
     }
     addScene(scene) {
         let gNode = document.createElementNS(SVG_NS, "g");
@@ -120,13 +92,11 @@ class Game {
         this.scene = scene;
     }
     nextScene() {
-        let scenes = Array.prototype.slice.call(document.getElementById(this.id).getElementsByTagName("symbol"));
-        scenes.map(function (a) {
-            return a.id;
-        })
+        let scenes = Array.prototype.slice.call(document.querySelectorAll("#" + this.id + ">g"));
+        scenes = scenes.map((a) => a.id);
         for (let y in scenes) {
             if (scenes[y] == this.scene) {
-                this.switchScene(this.scene[(y != scene.length) ? (y + 1) : 0]);
+                this.switchScene(scenes[(Number(y) != scenes.length) ? (Number(y) + 1) : 0]);
                 return;
             }
         }
@@ -257,21 +227,9 @@ class Game {
         }
         return path;
     }
-    repeat(times,func){
-        for(let i = 0; i < times;i++){
+    repeat(times, func) {
+        for (let i = 0; i < times; i++) {
             func();
         }
-    }
-    forever(func) {
-        setInterval(() => {
-            func();
-        }, 1000/60);
-    }
-    wait(seconds) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve();
-            }, seconds * 1000)
-        })
     }
 }
