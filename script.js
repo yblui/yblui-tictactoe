@@ -274,6 +274,12 @@ let bomb = game.createPath("M135.25 38.156c-16.082.46-32.345 7.235-46.47 17.407-
     "transform": "scale(0.2)"
 });
 game.addSprite("bomb", bomb);
+let bombWhite = game.createPath("M135.25 38.156c-16.082.46-32.345 7.235-46.47 17.407-17.216 12.4-31.534 30.2-37.31 50.687-5.78 20.488-1.95 44.032 16.155 63.406 14.573 15.595 19.996 29.328 20.563 40.5.566 11.173-3.554 20.304-10.376 27.406-13.643 14.206-37.278 17.995-50.5 6.094l-12.5 13.906c22.224 20.005 56.61 13.645 76.47-7.03 9.93-10.34 16.43-24.836 15.593-41.313-.836-16.478-8.83-34.407-25.594-52.345C67.18 141.782 65.16 126.6 69.47 111.312 73.78 96.025 85.484 80.97 99.72 70.72c14.233-10.253 30.704-15.365 43.218-13.44 9.566 1.474 17.565 6.055 23.062 17.44l15.938-9.19c-8.362-15.432-21.594-24.476-36.157-26.718-2.42-.372-4.866-.596-7.31-.656-1.07-.026-2.148-.03-3.22 0zM243.5 51.563l-120.125 69.374 24.906 43.157c15.03-18.11 33.446-33.898 55-46.344 20.615-11.903 42.444-19.803 64.595-23.938L243.5 51.563zm60.03 57.406c-1.026.01-2.065.034-3.092.06-29.894.803-60.05 8.877-87.813 24.907-88.84 51.298-119.255 164.55-68.03 253.282 51.222 88.73 164.505 119.013 253.343 67.717 88.837-51.295 119.223-164.55 68-253.28-34.666-60.05-97.713-93.346-162.407-92.688z",
+    "white", {
+    "transform": "scale(0.2)"
+});
+game.addSprite("bombWhite", bombWhite);
+
 //menu
 game.p1 = prompt("Player 1:", "Unnamed");
 game.p2 = prompt("Player 2:", "Unnamed");
@@ -323,7 +329,7 @@ setInterval(() => {
             game.circleTime -= 1 / 60;
         }
         if (game.scene == "original") {
-            game.setText(((game.crossTurn) ? "time1" : "time2"), (((game.crossTurn) ? game.crossTime : game.circleTime) - 1 / 60).toFixed(1));
+            game.setText(((game.crossTurn) ? "time1" : "time2"), Math.abs((((game.crossTurn) ? game.crossTime : game.circleTime) - 1 / 60)).toFixed((((game.crossTurn) ? game.crossTime : game.circleTime) >= 10) ? 0 : 1));
             if (game.crossTime <= 0) {
                 circleWin(2, "red1");
                 updateScore();
@@ -334,13 +340,30 @@ setInterval(() => {
                 game.gameOver = true;
             }
         } else if (game.scene == "numbers") {
-            game.setText(((game.crossTurn) ? "timen1" : "timen2"), (((game.crossTurn) ? game.crossTime : game.circleTime) - 1 / 60).toFixed(1));
+            game.setText(((game.crossTurn) ? "timen1" : "timen2"), Math.abs((((game.crossTurn) ? game.crossTime : game.circleTime) - 1 / 60)).toFixed((((game.crossTurn) ? game.crossTime : game.circleTime) >= 10) ? 0 : 1));
             if (game.crossTime <= 0) {
                 circleWin(2, "red2");
                 updateScore();
+                game.arrCircle = [2, 2, 2];
+                game.arrCross = [2, 2, 2];
                 game.gameOver = true;
             } else if (game.circleTime <= 0) {
                 crossWin(2, "red2");
+                updateScore();
+                game.arrCircle = [2, 2, 2];
+                game.arrCross = [2, 2, 2];
+                game.gameOver = true;
+            }
+        } else if (game.scene == "killer") {
+            game.setText(((game.crossTurn) ? "timek1" : "timek2"), Math.abs((((game.crossTurn) ? game.crossTime : game.circleTime) - 1 / 60)).toFixed((((game.crossTurn) ? game.crossTime : game.circleTime) >= 10) ? 0 : 1));
+            if (game.crossTime <= 0) {
+                game.circleScore += 6;
+                game.setText("red3", "O wins!");
+                updateScore();
+                game.gameOver = true;
+            } else if (game.circleTime <= 0) {
+                game.crossScore += 6;
+                game.setText("red3", "X wins!");
                 updateScore();
                 game.gameOver = true;
             }
@@ -430,24 +453,26 @@ game.whenClick("game", function () {
             game.crossTime = 5;
             game.circleTime = 5;
         } else if (game.scene == "numbers") {
-            game.setText("timen1", "10");
-            game.setText("timen2", "10");
-            game.crossTime = 10;
-            game.circleTime = 10;
+            game.setText("timen1", "12");
+            game.setText("timen2", "12");
+            game.crossTime = 12;
+            game.circleTime = 12;
         }
         if (game.setCount == 10 && game.scene == "original") {
             game.nextScene();
-            game.crossTime = 10;
-            game.circleTime = 10;
+            game.crossTime = 12;
+            game.circleTime = 12;
             game.setCount = 1;
         } else if (game.setCount == 10 && game.scene == "numbers") {
             game.nextScene();
+            game.crossTime = 56;
+            game.circleTime = 56;
         } else if (game.scene == "killer") {
             if (game.crossScore == game.circleScore) {
                 game.nextScene();
                 return;
             }
-            game.setText("winnerName", (game.crossScore > game.circleScore) ? game.p1 : p2)
+            game.setText("winnerName", (game.crossScore > game.circleScore) ? game.p1 : game.p2)
             game.switchScene("result");
         }
     }
@@ -553,6 +578,16 @@ game.addText("oscore2", "numbers", 0, 900, 40, {
 });
 
 //killer
+game.add("bombk1", "bombWhite", "killer", 50, 100);
+game.add("bombk2", "bombWhite", "killer", 850, 100);
+game.addText("timek1", "killer", "56", 110, 170, {
+    "fill": "black",
+    "font-size": "30px"
+});
+game.addText("timek2", "killer", "56", 910, 170, {
+    "fill": "black",
+    "font-size": "30px"
+});
 game.addText("red3", "killer", "", 500, 70, {
     "font-size": "20px",
     "fill": "#ff5757"
@@ -670,5 +705,40 @@ game.addText("winnerName", "result", "", 500, 350, {
 });
 game.whenClick("back", function () {
     game.switchScene("menu");
-    game = new Game();
+    game.crossTurn = true;
+    game.crossScore = 0;
+    game.circleScore = 0;
+    game.crossWinStreak = 0;
+    game.circleWinStreak = 0;
+    game.crossTime = 5;
+    game.circleTime = 5;
+    game.board = [
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""]
+    ];
+    game.boardKiller = [];
+    for (let i = 0; i < 3; i++) {
+        game.boardKiller[game.boardKiller.length] = [
+            [
+                ["", "", ""],
+                ["", "", ""],
+                ["", "", ""]
+            ],
+            [
+                ["", "", ""],
+                ["", "", ""],
+                ["", "", ""]
+            ],
+            [
+                ["", "", ""],
+                ["", "", ""],
+                ["", "", ""]
+            ]
+        ]
+    }
+    game.clickable = 0;
+    game.setCount = 1;
+    game.arrCross = [2, 2, 2];
+    game.arrCircle = [2, 2, 2];
 })
