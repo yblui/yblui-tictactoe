@@ -180,7 +180,7 @@ let rect10 = game.createRect(0, 397, 600, 6, "white");
 let rect11 = game.createRect(197, 0, 6, 600, "white");
 let rect12 = game.createRect(397, 0, 6, 600, "white");
 game.addSprite("boardWhite", rect9, rect10, rect11, rect12);
-let blankRect = game.createRect(0, 0, 200, 200, "white");
+let blankRect = game.createRect(0, 0, 200, 200, "transparent");
 game.addSprite("blank", blankRect);
 let blankSm = game.createRect(0, 0, 200 / 3 - 6, 200 / 3 - 6, "transparent");
 game.addSprite("blankSm", blankSm);
@@ -279,6 +279,11 @@ let bombWhite = game.createPath("M135.25 38.156c-16.082.46-32.345 7.235-46.47 17
     "transform": "scale(0.2)"
 });
 game.addSprite("bombWhite", bombWhite);
+let bombRed = game.createPath("M135.25 38.156c-16.082.46-32.345 7.235-46.47 17.407-17.216 12.4-31.534 30.2-37.31 50.687-5.78 20.488-1.95 44.032 16.155 63.406 14.573 15.595 19.996 29.328 20.563 40.5.566 11.173-3.554 20.304-10.376 27.406-13.643 14.206-37.278 17.995-50.5 6.094l-12.5 13.906c22.224 20.005 56.61 13.645 76.47-7.03 9.93-10.34 16.43-24.836 15.593-41.313-.836-16.478-8.83-34.407-25.594-52.345C67.18 141.782 65.16 126.6 69.47 111.312 73.78 96.025 85.484 80.97 99.72 70.72c14.233-10.253 30.704-15.365 43.218-13.44 9.566 1.474 17.565 6.055 23.062 17.44l15.938-9.19c-8.362-15.432-21.594-24.476-36.157-26.718-2.42-.372-4.866-.596-7.31-.656-1.07-.026-2.148-.03-3.22 0zM243.5 51.563l-120.125 69.374 24.906 43.157c15.03-18.11 33.446-33.898 55-46.344 20.615-11.903 42.444-19.803 64.595-23.938L243.5 51.563zm60.03 57.406c-1.026.01-2.065.034-3.092.06-29.894.803-60.05 8.877-87.813 24.907-88.84 51.298-119.255 164.55-68.03 253.282 51.222 88.73 164.505 119.013 253.343 67.717 88.837-51.295 119.223-164.55 68-253.28-34.666-60.05-97.713-93.346-162.407-92.688z",
+    "#ff5757", {
+    "transform": "scale(0.2)"
+});
+game.addSprite("bombRed", bombRed);
 
 //menu
 game.p1 = prompt("Player 1:", "Unnamed");
@@ -684,10 +689,71 @@ game.addText("oscore3", "killer", 0, 900, 40, {
 });
 
 //O. T.
-game.setBg("overtime", "#111")
+game.setBg("overtime","#111")
+game.add("bombo1", "bombRed", "overtime", 50, 100);
+game.add("bombo2", "bombRed", "overtime", 850, 100);
+game.addText("timeo1", "overtime", "15.0", 110, 170, {
+    "fill": "white",
+    "font-size": "30px"
+});
+game.addText("timeo2", "overtime", "15.0", 910, 170, {
+    "fill": "white",
+    "font-size": "30px"
+});
+arr.forEach(function (a) {
+    arr.forEach(function (b) {
+        game.add("recto" + (a / 200 * 3 + b / 200 + 1), "blank", "overtime", b + 200, a + 100);
+    });
+});
+for (let m = 1; m <= 9; m++) {
+    game.whenClick("recto" + m, function () {
+        if (!game.board[(m - 1 - (m - 1) % 3) / 3][(m - 1) % 3]) {
+            if (!game.gameOver) {
+                game.changeSprite("recto" + m, (game.crossTurn) ? "cross" : "circle");
+                game.board[(m - 1 - (m - 1) % 3) / 3][(m - 1) % 3] = (game.crossTurn) ? "x" : "o";
+                game.crossTurn = !game.crossTurn;
+            }
+            if (win(game.board) && !game.gameOver) {
+                let result = win(game.board);
+                if (result == "o") {
+                    circleWin(1, "red4");
+                } else if (result == "x") {
+                    crossWin(1, "red4");
+                } else {
+                    gameDraw("red4");
+                }
+                updateScore();
+                setTimeout(function () {
+                    game.gameOver = true;
+                }, 0);
+            }
+        }
+    });
+}
+game.add("boardo", "boardWhite", "overtime", 200, 100);
 game.addText("ot", "overtime", "O. T.", 500, 40, {
     "font-size": "30px",
     "fill": "white"
+});
+game.addText("red4", "overtime", "", 500, 70, {
+    "font-size": "20px",
+    "fill": "#ff5757"
+});
+game.addText("x4", "overtime", game.p1, 300, 40, {
+    "font-size": "30px",
+    "fill": "white"
+});
+game.addText("o4", "overtime", game.p2, 700, 40, {
+    "font-size": "30px",
+    "fill": "white"
+});
+game.addText("xscore4", "overtime", game.crossScore, 100, 40, {
+    "font-size": "30px",
+    "fill": "#ff5757"
+});
+game.addText("oscore4", "overtime", game.circleScore, 900, 40, {
+    "font-size": "30px",
+    "fill": "#5a9fdb"
 });
 
 //result
