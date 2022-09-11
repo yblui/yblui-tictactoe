@@ -372,6 +372,19 @@ setInterval(() => {
                 updateScore();
                 game.gameOver = true;
             }
+        } else if (game.scene == "overtime") {
+            game.setText(((game.crossTurn) ? "timeo1" : "timeo2"), Math.abs((((game.crossTurn) ? game.crossTime : game.circleTime) - 1 / 60)).toFixed((((game.crossTurn) ? game.crossTime : game.circleTime) >= 10) ? 0 : 1));
+            if (game.crossTime <= 0) {
+                game.circleScore += 1;
+                game.setText("red4", "O wins!");
+                updateScore();
+                game.gameOver = true;
+            } else if (game.circleTime <= 0) {
+                game.crossScore += 1;
+                game.setText("red4", "X wins!");
+                updateScore();
+                game.gameOver = true;
+            }
         }
     }
 }, 1000 / 60)
@@ -432,7 +445,6 @@ game.addText("oscore1", "original", game.circleScore, 900, 40, {
 });
 game.whenClick("game", function () {
     if (game.gameOver) {
-        game.gameOver = false;
         for (let i = 1; i <= 9; i++) {
             game.changeSprite("rect" + i, "blank");
             game.changeSprite("rectn" + i, "blank");
@@ -475,11 +487,20 @@ game.whenClick("game", function () {
         } else if (game.scene == "killer") {
             if (game.crossScore == game.circleScore) {
                 game.nextScene();
+                game.crossTime = 15;
+                game.circleTime = 15;
+                game.crossWinStreak = 0;
+                game.circleWinStreak = 0;
+                game.setCount = 1;
                 return;
             }
-            game.setText("winnerName", (game.crossScore > game.circleScore) ? game.p1 : game.p2)
+            game.setText("winnerName", (game.crossScore > game.circleScore) ? game.p1 : game.p2);
             game.switchScene("result");
+        } else if (game.scene == "overtime" && game.setCount == 2) {
+            game.setText("winnerName", (game.crossScore > game.circleScore) ? game.p1 : game.p2);
+            game.nextScene();
         }
+        game.gameOver = false;
     }
 });
 
@@ -689,14 +710,14 @@ game.addText("oscore3", "killer", 0, 900, 40, {
 });
 
 //O. T.
-game.setBg("overtime","#111")
+game.setBg("overtime", "#111")
 game.add("bombo1", "bombRed", "overtime", 50, 100);
 game.add("bombo2", "bombRed", "overtime", 850, 100);
-game.addText("timeo1", "overtime", "15.0", 110, 170, {
+game.addText("timeo1", "overtime", "15", 110, 170, {
     "fill": "white",
     "font-size": "30px"
 });
-game.addText("timeo2", "overtime", "15.0", 910, 170, {
+game.addText("timeo2", "overtime", "15", 910, 170, {
     "fill": "white",
     "font-size": "30px"
 });
@@ -709,7 +730,7 @@ for (let m = 1; m <= 9; m++) {
     game.whenClick("recto" + m, function () {
         if (!game.board[(m - 1 - (m - 1) % 3) / 3][(m - 1) % 3]) {
             if (!game.gameOver) {
-                game.changeSprite("recto" + m, (game.crossTurn) ? "cross" : "circle");
+                game.changeSprite("recto" + m, (game.crossTurn) ? "crossWhite" : "circleWhite");
                 game.board[(m - 1 - (m - 1) % 3) / 3][(m - 1) % 3] = (game.crossTurn) ? "x" : "o";
                 game.crossTurn = !game.crossTurn;
             }
@@ -807,4 +828,5 @@ game.whenClick("back", function () {
     game.setCount = 1;
     game.arrCross = [2, 2, 2];
     game.arrCircle = [2, 2, 2];
+    game.gameOver = true;
 })
